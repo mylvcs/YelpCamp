@@ -20,7 +20,7 @@ const campgroundRoutes = require('./routes/campgrounds');
 const commentRoutes = require('./routes/comments');
 
 // ENV VARIABLE
-const dbUrl = process.env.DBURL || 'mongodb://wmy:ilovezsr2018@ds235461.mlab.com:35461/wmy_yelpcamp';
+const dbUrl = process.env.DBURL || 'mongodb://username:password@ds235461.mlab.com:35461/wmy_yelpcamp';
 const PORT = process.env.PORT || 3000;
 
 mongoose.connect(dbUrl);
