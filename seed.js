@@ -1,58 +1,78 @@
-var mongoose = require("mongoose");
-var Campground = require("./models/campground");
-var Comment   = require("./models/comment");
+const mongoose = require('mongoose');
+const Campground = require('./models/campground');
+const Comment = require('./models/comment');
+const User = require('./models/user');
 
-var data = [
+const data = [
     {
-        name: "Cloud's Rest", 
-        image: "https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+        name: "Campground-1",
+        author: {},
+        image: "http://i.imgur.com/K3mPv14.jpg",
+        price: '50.05',
+        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+        comments: []
     },
     {
-        name: "Desert Mesa", 
-        image: "https://farm6.staticflickr.com/5487/11519019346_f66401b6c1.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+        name: "Campground-2",
+        author: {},
+        image: "http://i.imgur.com/SBEmFpv.jpg",
+        price: '100.09',
+        description: "This is a huge granite hill, no bathrooms.  No water. Beautiful granite!",
+        comments: []
     },
     {
-        name: "Canyon Floor", 
-        image: "https://farm1.staticflickr.com/189/493046463_841a18169e.jpg",
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+        name: "Campground-3",
+        author: {},
+        image: "http://i.imgur.com/emvhOnb.jpg",
+        price: '213.7',
+        description: "Good!",
+        comments: []
+    },
+    {
+        name: "Campground-4",
+        author: {},
+        image: "http://i.imgur.com/2LSMCmJ.jpg",
+        price: '4999.99',
+        description: "WoW~XD",
+        comments: []
+    },
+    {
+        name: "Campground-5",
+        author: {},
+        image: "http://i.imgur.com/TVGe0Ef.jpg",
+        price: '1.36',
+        description: "Cool^^",
+        comments: []
+    },
+];
+
+const ray = new User({username: 'ray'});
+const a = new User({username: 'a'});
+
+const comment = new Comment({
+    author: {
+        id: ray._id,
+        username: ray.username
+    },
+    text: 'This is a good campground.'
+});
+
+function seedDB() {
+    data[0].comments.push(comment);
+    for (let i = 0; i < data.length; i++){
+        data[i].author.id = ray._id;
+        data[i].author.username = ray.username;
     }
-]
-
-function seedDB(){
-   //Remove all campgrounds
-   Campground.remove({}, function(err){
-        if(err){
-            console.log(err);
-        }
-        console.log("removed campgrounds!");
-         //add a few campgrounds
-        data.forEach(function(seed){
-            Campground.create(seed, function(err, campground){
-                if(err){
-                    console.log(err)
-                } else {
-                    console.log("added a campground");
-                    //create a comment
-                    Comment.create(
-                        {
-                            text: "This place is great, but I wish there was internet",
-                            author: "Homer"
-                        }, function(err, comment){
-                            if(err){
-                                console.log(err);
-                            } else {
-                                campground.comments.push(comment);
-                                campground.save();
-                                console.log("Created new comment");
-                            }
-                        });
-                }
-            });
+    Promise.all([User.remove(), Campground.remove(), Comment.remove()])
+        .then(() => console.log('remove all user, campground and comment'))
+        .then(() => {
+          
+            return Promise.all([Campground.create(data),comment.save()]);
+        })
+        .then((result) => {
+            // console.log(result);
+            console.log('Data is finished');
         });
-    }); 
-    //add a few comments
 }
 
 module.exports = seedDB;
